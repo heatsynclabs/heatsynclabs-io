@@ -7,9 +7,12 @@ FROM node:22-alpine
 RUN apk add --no-cache wget
 WORKDIR /app
 
-# Install all deps (dev deps required for `nuxt build` and `drizzle-kit push`)
+# Install all deps (dev deps required for `nuxt build` and `drizzle-kit push`).
+# `npm install` (not `npm ci`): the pinned @commonpub/* 0.4.x train pulls two
+# commander majors, which npm's lockfile writer leaves in a state `npm ci`
+# rejects. `npm install` resolves it correctly and reproducibly enough here.
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+RUN npm install --no-audit --no-fund
 
 # Build the Nuxt app
 COPY . .
