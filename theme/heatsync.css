@@ -1,0 +1,219 @@
+/* ============================================================
+   HEATSYNC LABS — CommonPub custom theme
+   ------------------------------------------------------------
+   Tokens from the canonical HeatSync Labs design system
+   (member handbook, poster series, free-box / complaint sets).
+
+   HOW THIS WORKS
+   CommonPub ships every theme inside `@layer commonpub`. This
+   file is deliberately UNLAYERED: in the CSS cascade, unlayered
+   declarations beat any @layer, regardless of source order or
+   selector specificity. So these token values override
+   base.css / dark.css / agora.css cleanly without !important.
+
+   The instance runs the Classic family:
+     - light  -> no [data-theme] attribute  (themeId "base")
+     - dark   -> [data-theme="dark"]
+   The other selectors are defensive: if an admin switches the
+   family in /admin/theme, HeatSync still wins.
+   ============================================================ */
+
+/* ---- Raw HeatSync palette (also usable in custom components) ---- */
+:root {
+  --hs-ink:        #1a1a1a;
+  --hs-ink-panel:  #111111;
+  --hs-ink-soft:   #2c2c29;
+  --hs-paper:      #f5f0e6;
+  --hs-paper-d:    #e8e0d0;
+  --hs-paper-c:    #faf8f2;
+  --hs-orange:     #e07820;
+  --hs-orange-d:   #b85e12;
+  --hs-orange-lt:  #ed8a33;
+  --hs-builder:    #a85208;
+  --hs-talker:     #6d28d9;
+  --hs-lurker:     #1e3a5f;
+  --hs-founder:    #92400e;
+  --hs-newbie:     #15573e;
+  --hs-drama:      #9d174d;
+  --hs-teal:       #0e7490;
+  --hs-blue:       #1d6fa8;
+  --hs-red:        #c0392b;
+
+  --font-display:  'Permanent Marker', 'Special Elite', cursive;
+  --font-ui:       'VT323', 'Courier Prime', monospace;
+}
+
+/* ============================================================
+   LIGHT — "paper"  (Classic/base + light-ish families)
+   ============================================================ */
+:root,
+[data-theme="agora"] {
+  /* Surfaces */
+  --bg:        #f5f0e6;
+  --surface:   #faf8f2;
+  --surface2:  #efe7d6;
+  --surface3:  #e8e0d0;
+  --color-surface-overlay:        rgba(26, 26, 26, 0.55);
+  --color-surface-overlay-light:  rgba(26, 26, 26, 0.40);
+  --color-surface-scrim:          rgba(245, 240, 230, 0.80);
+
+  /* Text */
+  --text:        #1a1a1a;
+  --text-dim:    #5b554a;
+  --text-faint:  #8a8475;
+  --color-text-inverse: #f5f0e6;
+
+  /* Borders — thick ink, the HeatSync signature */
+  --border:   #1a1a1a;
+  --border2:  #cdbfa3;
+
+  /* Accent — HSL orange */
+  --accent:             #e07820;
+  --accent-bg:          rgba(224, 120, 32, 0.08);
+  --accent-bg-strong:   rgba(224, 120, 32, 0.18);
+  --accent-bg-heavy:    rgba(224, 120, 32, 0.35);
+  --accent-bg-solid:    rgba(224, 120, 32, 0.60);
+  --accent-border:      rgba(224, 120, 32, 0.30);
+  --accent-focus-ring:  0 0 0 3px rgba(224, 120, 32, 0.22);
+
+  /* Primary/accent button + link aliases (base.css hard-codes blue here) */
+  --color-primary-hover: #b85e12;
+  --color-accent-hover:  #b85e12;
+  --color-link:          #b85e12; /* AA on paper; raw orange is too light for text */
+  --color-link-hover:    #8f4a0e;
+  /* Orange fills carry dark ink text — poster style, AA-compliant */
+  --color-on-accent:   #1a1a1a;
+  --color-on-primary:  #1a1a1a;
+  --color-primary-text: #1a1a1a;
+  --color-accent-text:  #1a1a1a;
+
+  /* Semantic — drawn from the handbook archetype palette */
+  --green:  #15573e; --green-bg:  rgba(21, 87, 62, 0.08);   --green-border:  rgba(21, 87, 62, 0.28);
+  --yellow: #a85208; --yellow-bg: rgba(168, 82, 8, 0.08);   --yellow-border: rgba(168, 82, 8, 0.28);
+  --red:    #c0392b; --red-bg:    rgba(192, 57, 43, 0.08);  --red-border:    rgba(192, 57, 43, 0.28);
+  --purple: #6d28d9; --purple-bg: rgba(109, 40, 217, 0.08); --purple-border: rgba(109, 40, 217, 0.28);
+  --teal:   #0e7490; --teal-bg:   rgba(14, 116, 144, 0.08); --teal-border:   rgba(14, 116, 144, 0.28);
+  --pink:   #9d174d; --pink-bg:   rgba(157, 23, 77, 0.08);  --pink-border:   rgba(157, 23, 77, 0.28);
+
+  /* Typography — no substitutes, per the design system */
+  --font-sans:    'Special Elite', 'Courier Prime', monospace;
+  --font-body:    'Special Elite', 'Courier Prime', monospace;
+  --font-heading: 'Permanent Marker', 'Special Elite', cursive;
+  --font-mono:    'Courier Prime', ui-monospace, monospace;
+
+  /* Shape — sharp, hand-drawn; chunky 3px borders */
+  --border-width-thin: 1px;
+  --border-width-default: 3px;
+  --border-width-thick: 4px;
+
+  /* Shadows — hard offset, zero blur (no soft Material drop shadows) */
+  --shadow-sm: 3px 3px 0 var(--border);
+  --shadow-md: 5px 5px 0 var(--border);
+  --shadow-lg: 7px 7px 0 var(--border);
+  --shadow-xl: 9px 9px 0 var(--border);
+  --shadow-accent: 5px 5px 0 var(--accent);
+  --focus-ring: var(--shadow-accent);
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   DARK — "ink panel"  (Classic dark + dark families)
+   ============================================================ */
+[data-theme="dark"],
+[data-theme="agora-dark"],
+[data-theme="generics"] {
+  /* Surfaces */
+  --bg:        #111111;
+  --surface:   #1a1a1a;
+  --surface2:  #232320;
+  --surface3:  #2c2c29;
+  --color-surface-overlay:        rgba(0, 0, 0, 0.70);
+  --color-surface-overlay-light:  rgba(0, 0, 0, 0.55);
+  --color-surface-scrim:          rgba(17, 17, 17, 0.85);
+  --color-surface-hover:          var(--surface3);
+
+  /* Text */
+  --text:        #f5f0e6;
+  --text-dim:    #cabfa6;
+  --text-faint:  #8f8772;
+  --color-text-inverse: #1a1a1a;
+
+  /* Borders — warm light so the offset shadows still read */
+  --border:   #514a3d;
+  --border2:  #34302a;
+
+  /* Accent — orange brightens on ink */
+  --accent:             #ed8a33;
+  --accent-bg:          rgba(237, 138, 51, 0.12);
+  --accent-bg-strong:   rgba(237, 138, 51, 0.25);
+  --accent-bg-heavy:    rgba(237, 138, 51, 0.45);
+  --accent-bg-solid:    rgba(237, 138, 51, 0.65);
+  --accent-border:      rgba(237, 138, 51, 0.32);
+  --accent-focus-ring:  0 0 0 3px rgba(237, 138, 51, 0.28);
+
+  --color-primary-hover: #f59b45;
+  --color-accent-hover:  #f59b45;
+  --color-link:          #ed8a33; /* ~6:1 on #111 */
+  --color-link-hover:    #f59b45;
+  --color-on-accent:   #15120c;
+  --color-on-primary:  #15120c;
+  --color-primary-text: #15120c;
+  --color-accent-text:  #15120c;
+
+  /* Semantic — brighter for the dark ground */
+  --green:  #3fae7f; --green-bg:  rgba(63, 174, 127, 0.14);  --green-border:  rgba(63, 174, 127, 0.32);
+  --yellow: #d98a2b; --yellow-bg: rgba(217, 138, 43, 0.14);  --yellow-border: rgba(217, 138, 43, 0.32);
+  --red:    #e05a4c; --red-bg:    rgba(224, 90, 76, 0.14);   --red-border:    rgba(224, 90, 76, 0.32);
+  --purple: #9d6bf5; --purple-bg: rgba(157, 107, 245, 0.14); --purple-border: rgba(157, 107, 245, 0.32);
+  --teal:   #2bb6c9; --teal-bg:   rgba(43, 182, 201, 0.14);  --teal-border:   rgba(43, 182, 201, 0.32);
+  --pink:   #d44b7f; --pink-bg:   rgba(212, 75, 127, 0.14);  --pink-border:   rgba(212, 75, 127, 0.32);
+
+  /* Shadows — hard offset, dark ink so they read on the panel */
+  --shadow-sm: 3px 3px 0 rgba(0, 0, 0, 0.50);
+  --shadow-md: 5px 5px 0 rgba(0, 0, 0, 0.50);
+  --shadow-lg: 7px 7px 0 rgba(0, 0, 0, 0.50);
+  --shadow-xl: 9px 9px 0 rgba(0, 0, 0, 0.50);
+  --shadow-accent: 5px 5px 0 var(--accent);
+  --focus-ring: var(--shadow-accent);
+
+  color-scheme: dark;
+}
+
+/* ============================================================
+   COMPONENT POLISH
+   Restrained, brand-faithful touches over the layer's markup.
+   ============================================================ */
+
+/* Subtle paper grain — light only, removed on the ink panel */
+body {
+  background-image:
+    radial-gradient(rgba(26, 26, 26, 0.022) 1px, transparent 1px),
+    radial-gradient(rgba(26, 26, 26, 0.018) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+  background-attachment: fixed;
+}
+[data-theme="dark"] body,
+[data-theme="agora-dark"] body,
+[data-theme="generics"] body {
+  background-image: none;
+}
+
+/* Headings carry the marker hand; keep tracking sane at display sizes */
+h1, h2, h3,
+.cpub-h1, .cpub-h2, .cpub-h3 {
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+  font-weight: 400;
+}
+
+/* Site wordmark (logo lockup lives in components/SiteLogo.vue) */
+.cpub-site-logo .cpub-logo-name {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+.cpub-site-logo .cpub-logo-bracket {
+  color: var(--accent);
+}
