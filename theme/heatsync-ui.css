@@ -17,6 +17,25 @@
    @commonpub/layer.
    ============================================================ */
 
+/* ---- Landing content grid: ~half-size cards (2 cols -> 4) ----
+   ContentGridSection sets --grid-cols inline; overriding
+   grid-template-columns directly beats the inline value and also
+   covers the legacy grid. .cpub-content-grid is homepage-only.
+   Stepped down responsively so it never gets cramped. */
+.cpub-content-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px !important;
+}
+@media (max-width: 1100px) {
+  .cpub-content-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 780px) {
+  .cpub-content-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 520px) {
+  .cpub-content-grid { grid-template-columns: 1fr !important; }
+}
+
 /* ---- Content card: a little smaller ---- */
 .cpub-cc-thumb  { aspect-ratio: 16 / 9 !important; }   /* shorter than 4/3 */
 .cpub-cc-icon   { font-size: 26px !important; }

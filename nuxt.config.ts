@@ -13,6 +13,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
+        // Favicon — the HeatSync mark (layer ships none).
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/brand/heatsync-mark.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon-180.png' },
+        { rel: 'shortcut icon', href: '/favicon.ico' },
+
         // Brand typefaces — Permanent Marker / Special Elite / VT323 /
         // Courier Prime. The design system forbids substitutes/system fonts.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
