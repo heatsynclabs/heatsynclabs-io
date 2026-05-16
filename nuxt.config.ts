@@ -8,7 +8,7 @@ export default defineNuxtConfig({
 
   // Loaded AFTER the layer's theme CSS (Nuxt appends the app's css), and the
   // file is intentionally unlayered so it overrides @layer commonpub cleanly.
-  css: ['~/theme/heatsync.css'],
+  css: ['~/theme/heatsync.css', '~/theme/heatsync-ui.css'],
 
   app: {
     head: {

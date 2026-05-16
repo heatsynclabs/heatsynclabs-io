@@ -1,0 +1,66 @@
+/* ============================================================
+   HEATSYNC LABS — UI density overrides (component-level)
+   ------------------------------------------------------------
+   Restyle, don't fork: ContentCard / the card grids are the
+   layer's components with *scoped* CSS we don't own. Scoped
+   selectors compile to `.class[data-v-x]` (specificity 0,2,0),
+   so a handful of `!important` size properties is the correct,
+   minimal, update-safe lever — the component's markup and logic
+   keep tracking @commonpub/layer; only dimensions are pinned.
+   Everything else (cards, grids) still updates on layer bumps.
+   ============================================================ */
+
+/* ---- Smaller content cards (ContentCard = .cpub-cc*) ---- */
+.cpub-cc-thumb {
+  aspect-ratio: 3 / 2 !important;          /* was 4/3 — shorter, less vertical bulk */
+}
+.cpub-cc-icon {
+  font-size: 26px !important;              /* was 36 */
+}
+.cpub-cc-body {
+  padding: 9px 11px 8px !important;        /* was 12 14 10 */
+}
+.cpub-cc-title {
+  font-size: 12px !important;             /* was 13 */
+  line-height: 1.3 !important;
+  margin-bottom: 3px !important;
+}
+.cpub-cc-desc {
+  font-size: 10.5px !important;           /* was 11 */
+  line-height: 1.45 !important;
+  margin-bottom: 6px !important;
+  -webkit-line-clamp: 2 !important;
+}
+.cpub-cc-footer {
+  padding-top: 6px !important;
+}
+.cpub-cc-av {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* ---- Denser card grids everywhere they appear ----
+   Pages hardcode 1-2 columns in scoped CSS; make every content
+   grid auto-fill with a small min track so cards stay compact
+   and the layout reflows to the viewport. */
+.cpub-content-grid,
+.cpub-explore-grid,
+.cpub-editorial-grid:not(.cpub-editorial-single),
+.cpub-events-grid,
+.cpub-course-grid {
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (max-width: 540px) {
+  .cpub-content-grid,
+  .cpub-explore-grid,
+  .cpub-editorial-grid,
+  .cpub-events-grid,
+  .cpub-course-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Layer components that read this var get a denser default too */
+:root { --grid-cols: 3; }
