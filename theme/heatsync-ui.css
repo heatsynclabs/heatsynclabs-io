@@ -1,25 +1,28 @@
 /* ============================================================
    HEATSYNC LABS — UI polish (restrained, no forks)
    ------------------------------------------------------------
-   Standard layer layout is left intact. This only:
-     - nudges the content card a touch more compact
-     - gives buttons the signature hard-offset press feel
-     - turns the understated stock hero into a brand moment
-     - tightens the footer + styles the CommonPub credit link
+   Standard layer layout/markup untouched. CSS only:
+     - content card a little smaller
+     - buttons: signature hard-offset press
+     - stock hero -> a brand moment
+     - filter tabs read as a deliberate control
+     - breathing room between the filters and the cards
+     - Platform Stats sidebar card removed
+     - footer break + CommonPub credit link styling
 
-   Global theme classes (buttons) override cleanly because this
-   file is unlayered (beats @layer commonpub). Scoped component
-   classes (.cpub-cc*, hero, footer) compile to .class[data-v]
-   (0,2,0), so those use minimal !important on size/skin props
-   only — markup and logic still track @commonpub/layer.
+   Global theme classes (buttons) override cleanly (this file is
+   unlayered, beats @layer commonpub). Scoped component classes
+   compile to .class[data-v] (0,2,0) so those use minimal
+   !important on skin/size props only — logic still tracks
+   @commonpub/layer.
    ============================================================ */
 
-/* ---- Content card: a touch more compact ---- */
-.cpub-cc-thumb  { aspect-ratio: 3 / 2 !important; }
-.cpub-cc-icon   { font-size: 28px !important; }
-.cpub-cc-body   { padding: 10px 12px 9px !important; }
-.cpub-cc-title  { font-size: 12px !important; line-height: 1.3 !important; margin-bottom: 3px !important; }
-.cpub-cc-desc   { font-size: 10.5px !important; margin-bottom: 6px !important; }
+/* ---- Content card: a little smaller ---- */
+.cpub-cc-thumb  { aspect-ratio: 16 / 9 !important; }   /* shorter than 4/3 */
+.cpub-cc-icon   { font-size: 26px !important; }
+.cpub-cc-body   { padding: 9px 11px 8px !important; }
+.cpub-cc-title  { font-size: 11.5px !important; line-height: 1.3 !important; margin-bottom: 3px !important; }
+.cpub-cc-desc   { font-size: 10px !important; margin-bottom: 6px !important; }
 
 /* ---- Buttons: tactile hard-offset press (global, clean) ---- */
 .cpub-btn {
@@ -27,14 +30,8 @@
   transition: transform var(--transition-fast), box-shadow var(--transition-fast),
     background var(--transition-default), border-color var(--transition-default);
 }
-.cpub-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-md);
-}
-.cpub-btn:active {
-  transform: translate(0, 0);
-  box-shadow: none;
-}
+.cpub-btn:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-md); }
+.cpub-btn:active { transform: translate(0, 0); box-shadow: none; }
 .cpub-btn-primary {
   background: var(--accent);
   color: var(--color-on-accent);
@@ -44,32 +41,45 @@
 .cpub-btn-primary:active { box-shadow: none; }
 
 /* ---- Hero: make the stock banner a real brand moment ---- */
-.cpub-hero-banner {
-  border-bottom: var(--border-width-thick, 4px) solid var(--border) !important;
-}
-.cpub-hero-inner {
-  padding: clamp(2.25rem, 5vw, 3.5rem) 2rem !important;
-}
+.cpub-hero-banner { border-bottom: var(--border-width-thick, 4px) solid var(--border) !important; }
+.cpub-hero-inner  { padding: clamp(2.25rem, 5vw, 3.5rem) 2rem !important; }
 .cpub-hero-title {
-  font-family: var(--font-heading) !important;   /* Permanent Marker */
+  font-family: var(--font-heading) !important;
   font-weight: 400 !important;
   font-size: clamp(2rem, 5vw, 3.25rem) !important;
   line-height: 1.05 !important;
   letter-spacing: 0.5px !important;
-  text-shadow: 3px 3px 0 var(--accent) !important; /* the HeatSync hard offset */
+  text-shadow: none !important;            /* no orange offset on titles */
   margin-bottom: 14px !important;
 }
-.cpub-hero-title span { color: var(--text) !important; } /* keep readable; accent is the shadow */
-.cpub-hero-excerpt {
-  font-size: 15px !important;
-  line-height: 1.65 !important;
-  max-width: 46rem !important;
+.cpub-hero-title span { color: var(--text) !important; }
+.cpub-hero-excerpt { font-size: 15px !important; line-height: 1.65 !important; max-width: 46rem !important; }
+
+/* ---- Filter tabs: a deliberate, branded control ---- */
+.cpub-tab {
+  padding: 12px 18px !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--tracking-wide, 0.04em) !important;
+  border-bottom: var(--border-width-default) solid transparent !important;
+  transition: color var(--transition-default), background var(--transition-default),
+    border-color var(--transition-default) !important;
+}
+.cpub-tab:hover { color: var(--text) !important; }
+.cpub-tab.active {
+  color: var(--accent) !important;
+  background: var(--accent-bg) !important;
+  border-bottom: var(--border-width-thick, 4px) solid var(--accent) !important;
 }
 
-/* ---- Footer: stronger section break + the CommonPub credit ---- */
-.cpub-footer {
-  border-top: var(--border-width-thick, 4px) solid var(--border) !important;
-}
+/* ---- Breathing room between the filter bar and the cards ---- */
+.cpub-main-layout { padding-top: 44px !important; }   /* was 28px */
+
+/* ---- Remove the Platform Stats sidebar card ----
+   .cpub-stats-grid is unique to that card, so :has targets only it. */
+.cpub-sb-card:has(.cpub-stats-grid) { display: none !important; }
+
+/* ---- Footer break + CommonPub credit link ---- */
+.cpub-footer { border-top: var(--border-width-thick, 4px) solid var(--border) !important; }
 .hs-cpub-credit {
   color: var(--accent);
   font-weight: var(--font-weight-bold, 700);

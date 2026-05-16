@@ -210,9 +210,10 @@ h1, h2, h3,
 
 /* Site wordmark (logo lockup lives in components/SiteLogo.vue) */
 .cpub-site-logo .cpub-logo-name {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  letter-spacing: 0.5px;
+  /* Charis SIL only on the top-corner wordmark, by request */
+  font-family: 'Charis SIL', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 .cpub-site-logo .cpub-logo-bracket {
   color: var(--accent);

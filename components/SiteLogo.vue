@@ -45,13 +45,12 @@
 }
 
 .cpub-logo-name {
-  font-family: var(--font-heading, 'Permanent Marker', cursive);
+  /* Charis SIL only here, by request — not used for any other text */
+  font-family: 'Charis SIL', Georgia, serif;
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1;
   color: var(--text);
-  letter-spacing: 0.5px;
-  /* Hard offset shadow — the HeatSync signature, scaled for nav size */
-  text-shadow: 1.5px 1.5px 0 var(--accent);
+  letter-spacing: 0.2px;
 }
 </style>
