@@ -28,7 +28,12 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
   gap: var(--space-4, 16px) !important;
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .cpub-content-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  }
+}
+@media (max-width: 480px) {
   .cpub-content-grid { grid-template-columns: 1fr !important; }
 }
 
