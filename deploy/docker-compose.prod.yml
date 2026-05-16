@@ -1,0 +1,77 @@
+# Production stack for the HeatSync Labs CommonPub instance.
+#
+# Deliberately minimal for a single small droplet:
+#   - No Redis  -> app uses in-process rate limits + SSE (fine single-instance)
+#   - No Meilisearch -> search falls back to Postgres full-text search
+# This keeps RAM usage comfortable on an s-1vcpu-2gb box.
+#
+# The `app` image is loaded on the droplet by the deploy workflow
+# (docker load from a tarball), tagged heatsynclabs-app:latest.
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - cpub
+
+  app:
+    image: heatsynclabs-app:latest
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - cpub
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: commonpub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: commonpub
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U commonpub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cpub
+
+networks:
+  cpub:
+
+volumes:
+  caddy_data:
+  caddy_config:
+  uploads_data:
+  pg_data:

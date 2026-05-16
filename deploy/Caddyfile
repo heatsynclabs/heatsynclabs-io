@@ -1,0 +1,43 @@
+heatsynclabs.io {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# Server-Sent Events endpoints — disable proxy buffering so events stream live
+	@sse path /api/notifications/stream /api/messages/*/stream
+	handle @sse {
+		reverse_proxy app:3000 {
+			flush_interval -1
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
+
+	handle {
+		reverse_proxy app:3000 {
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
+
+	log {
+		output file /var/log/caddy/heatsynclabs.log {
+			roll_size 50MiB
+			roll_keep 5
+		}
+		format json
+	}
+}
+
+www.heatsynclabs.io {
+	redir https://heatsynclabs.io{uri} permanent
+}

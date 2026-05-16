@@ -1,0 +1,67 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t heatsynclabs-app:latest .
+
+      - name: Save image tarball
+        run: docker save heatsynclabs-app:latest | gzip > heatsynclabs-app.tar.gz
+
+      - name: Copy image to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: root
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: heatsynclabs-app.tar.gz
+          target: /opt/commonpub/
+          timeout: 600s
+
+      - name: Load image, restart, migrate
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: root
+          key: ${{ secrets.PROD_SSH_KEY }}
+          command_timeout: 10m
+          script: |
+            set -e
+            cd /opt/commonpub
+            docker load < heatsynclabs-app.tar.gz
+            rm -f heatsynclabs-app.tar.gz
+            docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans
+            # Wait for the app container to be up before pushing schema
+            for i in $(seq 1 30); do
+              if docker compose -f docker-compose.prod.yml ps app | grep -q "Up"; then break; fi
+              sleep 3
+            done
+            # Sync DB schema (drizzle-kit reads schema from @commonpub/schema in the image).
+            # --force auto-accepts on a controlled single-tenant schema.
+            docker compose -f docker-compose.prod.yml exec -T app npm run db:push -- --force \
+              2>&1 | tee /tmp/dbpush.log \
+              || { echo "::error::db:push failed"; cat /tmp/dbpush.log; exit 1; }
+            docker image prune -f
+            # Smoke test
+            for i in 1 2 3 4 5 6; do
+              if curl -sf http://localhost:3000/api/health >/dev/null 2>&1 \
+                 || docker compose -f docker-compose.prod.yml exec -T app wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1; then
+                echo "✅ Health check passed"; exit 0
+              fi
+              echo "⏳ Waiting for app... ($i/6)"; sleep 5
+            done
+            echo "::warning::Health check did not pass — check 'docker compose logs app' on the droplet"

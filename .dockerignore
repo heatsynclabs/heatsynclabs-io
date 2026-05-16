@@ -1,0 +1,12 @@
+node_modules
+.nuxt
+.output
+.turbo
+.git
+secrets
+*.env
+.env*
+!.env.example
+uploads/*
+!uploads/.gitkeep
+npm-debug.log

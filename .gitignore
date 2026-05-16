@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build
+.nuxt/
+.output/
+dist/
+.turbo/
+
+# Environment / secrets — never commit
+.env
+.env.*
+!.env.example
+secrets/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (dev)
+uploads/*
+!uploads/.gitkeep
