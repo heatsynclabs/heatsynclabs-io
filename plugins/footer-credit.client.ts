@@ -1,21 +1,24 @@
 /**
- * Footer attribution fix (client-only, non-fork).
+ * CommonPub attribution -> real links (client-only, non-fork).
  *
- * The footer lives inline in @commonpub/layer's layouts/default.vue.
- * Forking that whole layout to change two nodes would be overreach, so
- * this plugin patches just the attribution after hydration:
+ * Both "Powered by CommonPub" spots live inline in big layer files
+ * (footer in layouts/default.vue, sidebar badge in pages/index.vue).
+ * Forking either to change a couple nodes is overreach, so this patches
+ * them after render:
  *
- *   1. "Powered by <site>." -> real link: "Powered by CommonPub"
- *      pointing at the CommonPub source repo.
- *   2. The footer GitHub icon (-> github.com/commonpub org) retargeted
- *      to the actual repo.
+ *   1. footer tagline      -> "Powered by <a>CommonPub</a>"  (repo)
+ *   2. footer GitHub icon  -> repo (was the org)
+ *   3. sidebar .cpub-powered-badge -> wrapped in a link to the repo
  *
- * Idempotent and null-safe: if the layer restructures the footer the
- * selectors simply miss and nothing breaks.
+ * A MutationObserver (not just a mount hook) is used on purpose: the
+ * earlier hook-only version didn't stick because the nodes hydrate /
+ * re-render after the hook ran. The observer is idempotent (data flags)
+ * and cheap (no-ops once everything is patched).
  */
 const REPO = 'https://github.com/commonpub/commonpub';
 
-function patchFooter(): void {
+function patch(): void {
+  // 1. Footer tagline -> "Powered by CommonPub" (link)
   const tagline = document.querySelector<HTMLElement>('.cpub-footer-tagline');
   if (tagline && tagline.dataset.hsCredit !== '1') {
     tagline.dataset.hsCredit = '1';
@@ -29,15 +32,38 @@ function patchFooter(): void {
     tagline.appendChild(a);
   }
 
+  // 2. Footer GitHub icon -> repo
   document
     .querySelectorAll<HTMLAnchorElement>('.cpub-footer-social a[aria-label="GitHub"]')
     .forEach((el) => {
       if (el.getAttribute('href') !== REPO) el.setAttribute('href', REPO);
     });
+
+  // 3. Sidebar "Powered by [C] CommonPub" badge -> make it a link
+  document
+    .querySelectorAll<HTMLElement>('.cpub-powered-badge')
+    .forEach((badge) => {
+      if (badge.dataset.hsCredit === '1') return;
+      badge.dataset.hsCredit = '1';
+      const inner = badge.innerHTML;
+      const a = document.createElement('a');
+      a.href = REPO;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'hs-cpub-badge-link';
+      a.innerHTML = inner;
+      badge.replaceChildren(a);
+    });
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.hook('app:mounted', () => requestAnimationFrame(patchFooter));
-  // SPA navigations keep the persistent layout, but re-assert cheaply.
-  nuxtApp.hook('page:finish', () => requestAnimationFrame(patchFooter));
+export default defineNuxtPlugin(() => {
+  if (typeof window === 'undefined') return;
+  patch();
+  const obs = new MutationObserver(() => patch());
+  const start = () => {
+    patch();
+    obs.observe(document.body, { childList: true, subtree: true });
+  };
+  if (document.body) start();
+  else window.addEventListener('DOMContentLoaded', start, { once: true });
 });

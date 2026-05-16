@@ -87,3 +87,12 @@
   text-underline-offset: 2px;
 }
 .hs-cpub-credit:hover { color: var(--color-link-hover, var(--accent)); }
+/* Sidebar "Powered by CommonPub" badge, now wrapped in a link */
+.hs-cpub-badge-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+.cpub-powered-badge:hover { border-color: var(--accent); }
