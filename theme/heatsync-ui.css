@@ -17,24 +17,30 @@
    @commonpub/layer.
    ============================================================ */
 
-/* ---- Landing content grid: ~half-size cards (2 cols -> 4) ----
-   ContentGridSection sets --grid-cols inline; overriding
-   grid-template-columns directly beats the inline value and also
-   covers the legacy grid. .cpub-content-grid is homepage-only.
-   Stepped down responsively so it never gets cramped. */
+/* ---- Landing content grid: match /blog & /projects exactly ----
+   Those pages use .cpub-listing-grid = repeat(auto-fill,minmax(280px,1fr)),
+   which is the card size the user wants. The landing uses
+   .cpub-content-grid (ContentGridSection, inline --grid-cols:2 -> big
+   2-up). Mirror the listing rule so the landing matches them 1:1.
+   .cpub-content-grid is homepage-only, so this is scoped to it. */
 .cpub-content-grid {
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 12px !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: var(--space-4, 16px) !important;
 }
-@media (max-width: 1100px) {
-  .cpub-content-grid { grid-template-columns: repeat(3, 1fr) !important; }
-}
-@media (max-width: 780px) {
-  .cpub-content-grid { grid-template-columns: repeat(2, 1fr) !important; }
-}
-@media (max-width: 520px) {
+@media (max-width: 600px) {
   .cpub-content-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ---- Kill the silly tabs-row scrollbar ----
+   The active tabs row (ContentGridSection's .cpub-tabs-inner) has
+   overflow-x:auto but no scrollbar hiding (only the unused legacy
+   one hid it). Hide it on both; it still scrolls if it must. */
+.cpub-tabs-inner {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.cpub-tabs-inner::-webkit-scrollbar { display: none !important; }
 
 /* ---- Content card: a little smaller ---- */
 .cpub-cc-thumb  { aspect-ratio: 16 / 9 !important; }   /* shorter than 4/3 */
