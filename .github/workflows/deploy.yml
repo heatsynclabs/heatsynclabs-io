@@ -50,11 +50,16 @@ jobs:
               if docker compose -f docker-compose.prod.yml ps app | grep -q "Up"; then break; fi
               sleep 3
             done
-            # Sync DB schema (drizzle-kit reads schema from @commonpub/schema in the image).
-            # --force auto-accepts on a controlled single-tenant schema.
-            docker compose -f docker-compose.prod.yml exec -T app npm run db:push -- --force \
-              2>&1 | tee /tmp/dbpush.log \
-              || { echo "::error::db:push failed"; cat /tmp/dbpush.log; exit 1; }
+            # Apply committed schema migrations via drizzle migrate (db-migrate.mjs).
+            # Replaces `db:push --force`, which aborts non-interactively on
+            # drizzle-kit's truncate prompt (no TTY) and silently applied nothing.
+            # NO `| tee` — that masked the exit code. Migrations ship in the image
+            # under node_modules/@commonpub/schema/migrations; state is baselined in
+            # drizzle.__drizzle_migrations.
+            docker compose -f docker-compose.prod.yml exec -T \
+              -e DRIZZLE_MIGRATIONS_FOLDER=node_modules/@commonpub/schema/migrations \
+              app node scripts/db-migrate.mjs \
+              || { echo "::error::db:migrate failed"; exit 1; }
             docker image prune -f
             # Smoke test
             for i in 1 2 3 4 5 6; do
