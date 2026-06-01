@@ -12,14 +12,14 @@ importers:
         specifier: ^0.16.0
         version: 0.16.0
       '@commonpub/layer':
-        specifier: ^0.43.2
-        version: 0.43.2(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)
+        specifier: ^0.43.3
+        version: 0.43.3(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)
       '@commonpub/schema':
         specifier: ^0.25.0
         version: 0.25.0(drizzle-orm@0.45.2(kysely@0.28.17)(pg@8.20.0))
       '@commonpub/server':
-        specifier: ^2.71.0
-        version: 2.71.0(c536a336889b5a5f46e8f5de47b27ba5)
+        specifier: ^2.72.0
+        version: 2.72.0(c536a336889b5a5f46e8f5de47b27ba5)
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
@@ -549,8 +549,8 @@ packages:
       sharp:
         optional: true
 
-  '@commonpub/layer@0.43.2':
-    resolution: {integrity: sha512-hYYXqW4IdwWdNnPiBmwBCoo1Lz8c1EwBGWxMtzbnIx/qyAEbYvKqXSwvbWZm7Hi3DVaCr00A+j5I98Dc9XTIsw==}
+  '@commonpub/layer@0.43.3':
+    resolution: {integrity: sha512-gW+ZzTRf3/L3gjtw8kGLjo0qADDz/27eCgdY8S4XJ0qNxoAOKaIBiuFznqzVf0aGCOGzmzgvKzKDPkYHWHB2wg==}
 
   '@commonpub/learning@0.5.2':
     resolution: {integrity: sha512-hcCfmN18/yBiEkbwtIBzszv2+Sjgvs9wAddarzp3R4HrRovMksVNV0skG+VsFd8mS8XOtwvB2wlFw6YagVOU/g==}
@@ -590,8 +590,8 @@ packages:
     peerDependencies:
       drizzle-orm: ^0.45.1
 
-  '@commonpub/server@2.71.0':
-    resolution: {integrity: sha512-Wt6Dydz7iYdu7wPTo782UeAFlOUgF9TR/L7Fkm6ihWdWb3yfbYqyA3rQQgjSZr6eEmKSyg1+0U01GlgFu3HE8g==}
+  '@commonpub/server@2.72.0':
+    resolution: {integrity: sha512-dtF99U3G/+mZVoSjVT9oissu1vIlA9+bxbgjwIPAhuCKqaqynlG9wh7JJRjnhVpRhHt8NgE3Gr1JIESl5jCJug==}
     engines: {node: '>=22'}
     peerDependencies:
       drizzle-orm: ^0.45.1
@@ -6324,7 +6324,7 @@ snapshots:
       ioredis: 5.10.1
       sharp: 0.34.5
 
-  '@commonpub/layer@0.43.2(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)':
+  '@commonpub/layer@0.43.3(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)':
     dependencies:
       '@aws-sdk/client-s3': 3.1048.0
       '@commonpub/auth': 0.7.0(drizzle-kit@0.31.10)(kysely@0.28.17)(pg@8.20.0)(vue@3.5.34(typescript@5.9.3))
@@ -6335,7 +6335,7 @@ snapshots:
       '@commonpub/learning': 0.5.2(ec64a88229b0a36cc67ae75860bd8a6e)
       '@commonpub/protocol': 0.12.0(drizzle-orm@0.45.2(kysely@0.28.17)(pg@8.20.0))
       '@commonpub/schema': 0.25.0(drizzle-orm@0.45.2(kysely@0.28.17)(pg@8.20.0))
-      '@commonpub/server': 2.71.0(c536a336889b5a5f46e8f5de47b27ba5)
+      '@commonpub/server': 2.72.0(c536a336889b5a5f46e8f5de47b27ba5)
       '@commonpub/ui': 0.9.2(vue@3.5.34(typescript@5.9.3))(zod@4.4.3)
       '@tiptap/core': 2.27.2(@tiptap/pm@2.27.2)
       '@tiptap/extension-bold': 2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))
@@ -6478,7 +6478,7 @@ snapshots:
       drizzle-orm: 0.45.2(kysely@0.28.17)(pg@8.20.0)
       zod: 4.4.3
 
-  '@commonpub/server@2.71.0(c536a336889b5a5f46e8f5de47b27ba5)':
+  '@commonpub/server@2.72.0(c536a336889b5a5f46e8f5de47b27ba5)':
     dependencies:
       '@commonpub/auth': 0.7.0(drizzle-kit@0.31.10)(kysely@0.28.17)(pg@8.20.0)(vue@3.5.34(typescript@5.9.3))
       '@commonpub/config': 0.16.0
