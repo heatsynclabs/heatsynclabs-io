@@ -9,7 +9,12 @@
  * `contests` homepage section. Markup/styles are otherwise identical
  * to the layer's. Delete this file to restore stock behavior.
  */
-defineProps<{ config?: Record<string, unknown> }>();
+import type { HomepageSectionConfig } from '@commonpub/server';
+
+// Match the layer's prop contract: the renderer binds a HomepageSectionConfig
+// (an interface — NOT assignable to Record<string, unknown>; vue ≥3.5.34's
+// stricter template checking rejects the loose shape).
+defineProps<{ config?: HomepageSectionConfig }>();
 
 // Persisted so the dismiss sticks across HomepageSectionRenderer remounts
 // (same useState key the layer uses).
