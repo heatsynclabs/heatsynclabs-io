@@ -12,8 +12,8 @@ importers:
         specifier: ^0.29.0
         version: 0.29.0
       '@commonpub/layer':
-        specifier: ^0.93.0
-        version: 0.93.0(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)
+        specifier: ^0.94.0
+        version: 0.94.0(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)
       '@commonpub/schema':
         specifier: ^0.55.0
         version: 0.55.0(drizzle-orm@0.45.2(kysely@0.28.17)(pg@8.20.0))
@@ -599,8 +599,8 @@ packages:
       sharp:
         optional: true
 
-  '@commonpub/layer@0.93.0':
-    resolution: {integrity: sha512-yd49xH5tA5uQYb27IdklE8j3T1il02ddQqLH96P26H+kJYbaE7n6g3PT74ALCVnRowb4ojIxBqNDG5HM5Dc2Jw==}
+  '@commonpub/layer@0.94.0':
+    resolution: {integrity: sha512-N+tH9nRkG4hNxoaVMcVB96WrfFj/uJam+Cmj1Tpr7Z5HPhOy2QVSIa4uevuh6ME7L/kx1hvF+bxnFKUkMkizXQ==}
 
   '@commonpub/learning@0.5.2':
     resolution: {integrity: sha512-hcCfmN18/yBiEkbwtIBzszv2+Sjgvs9wAddarzp3R4HrRovMksVNV0skG+VsFd8mS8XOtwvB2wlFw6YagVOU/g==}
@@ -6532,7 +6532,7 @@ snapshots:
       ioredis: 5.10.1
       sharp: 0.34.5
 
-  '@commonpub/layer@0.93.0(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)':
+  '@commonpub/layer@0.94.0(@noble/hashes@2.2.0)(@tiptap/extension-horizontal-rule@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(drizzle-kit@0.31.10)(ioredis@5.10.1)(kysely@0.28.17)(typescript@5.9.3)':
     dependencies:
       '@aws-sdk/client-s3': 3.1048.0
       '@commonpub/auth': 0.9.0(drizzle-kit@0.31.10)(kysely@0.28.17)(pg@8.20.0)(vue@3.5.34(typescript@5.9.3))
