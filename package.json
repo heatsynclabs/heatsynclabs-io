@@ -17,13 +17,13 @@
     "@commonpub/server": "^2.120.0",
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.1",
-    "nuxt": "^3.16.0",
+    "nuxt": "^3.21.9",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^3.3.8"
   }
 }
