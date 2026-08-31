@@ -16,6 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # This repo has no CI workflow, so merging to main IS deploying. That
+      # makes a pre-build gate the only place a bad dependency tree can be
+      # stopped. It reads package-lock.json, which is what the Dockerfile below
+      # installs from.
+      #
+      # On 2026-08-31 the sibling instance (deveco.io) served 500 on every SSR
+      # page after a nuxt bump left three copies of vue in the npm tree, while
+      # /api/health kept answering because API routes never touch Vue.
+      - name: Single-copy check (the tree this image installs)
+        run: node scripts/check-single-vue.mjs
+
       - name: Build Docker image
         run: docker build -t heatsynclabs-app:latest .
 
