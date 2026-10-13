@@ -6,13 +6,11 @@ export default defineNuxtConfig({
   extends: ['@commonpub/layer'],
   devtools: { enabled: true },
 
-  // Loaded AFTER the layer's theme CSS (Nuxt appends the app's css), and the
-  // files are intentionally unlayered so they override @layer commonpub cleanly.
-  // gantry.css is the instance theme (registered in commonpub.config.ts);
-  // heatsync-ui.css is layout polish that reads tokens only. The previous
-  // palette, theme/heatsync.css, is kept in the repo but no longer loaded: it
-  // forced its orange onto every theme, which would fight Gantry.
-  css: ['~/theme/heatsync-ui.css', '~/theme/gantry.css'],
+  // Loaded AFTER the layer's theme CSS (Nuxt appends the app's css) and
+  // unlayered, so it overrides @layer commonpub cleanly. theme/gantry.css is the
+  // whole look (tokens, ribbons, type, components). The older theme/heatsync.css
+  // and theme/heatsync-ui.css are kept in the repo for reference but not loaded.
+  css: ['~/theme/gantry.css'],
 
   app: {
     head: {
