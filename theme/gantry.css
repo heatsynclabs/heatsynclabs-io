@@ -1,221 +1,76 @@
 /* ============================================================
-   HEATSYNC LABS — GANTRY THEME for CommonPub
+   HEATSYNC LABS — GANTRY for CommonPub
    ------------------------------------------------------------
-   Adapted from the Gantry design system (new-hsl,
-   src/styles/tokens.css v1.1): industrial UI for the workshop
-   floor. Charcoal and steel surfaces, bone text, caution-tape
-   amber accent, sharp corners, hard offset shadows. Archivo
-   for display, Instrument Sans for body, IBM Plex Mono for
-   labels. Charis SIL stays on the wordmark only.
+   The HeatSync Labs design system (new-hsl, src/styles/tokens.css
+   v1.1 and its components) applied to this CommonPub instance, to
+   match heatsynclabs.org: paper and ink by default, a charcoal dark
+   mode, caution-tape ribbons, IBM Plex Mono for every label, nav
+   item and button, Archivo for headlines, Instrument Sans for body
+   copy, Charis SIL for the wordmark only. Sharp corners, 2px ink
+   borders, hard offset shadows.
 
-   Registered in commonpub.config.ts as a pair:
-     gantry        dark  (the default, as in Gantry itself)
-     gantry-light  light (paper and ink)
+   HOW IT APPLIES
+   Unlayered (beats @layer commonpub) and keyed on
+   `:root[data-theme]`, which is the same specificity as the inline
+   token block a DB-stored custom theme injects and comes after it,
+   so Gantry is what renders whatever theme id the instance resolves.
+   Component rules carry the same `:root[data-theme]` prefix, which
+   outranks the layer's scoped `.class[data-v-x]` selectors without
+   !important. Dark mode: the `gantry-dark` id (registered pair) and
+   any other `*-dark` id.
 
-   Unlayered on purpose: the layer ships its themes inside
-   `@layer commonpub`, and unlayered declarations beat any
-   layer, so these win without !important.
-
-   Contrast: every text token below clears WCAG AA (4.5:1) on
-   bg, surface and surface2 of its own mode. Two Gantry values
-   did not and are adjusted: dark --smoke (3.6:1) becomes the
-   faint text #968b78, and light --accent-text #b9740f (3.3:1)
-   becomes #865409. In light mode the bright hazard amber is
-   kept for filled controls (primary buttons, selection), where
-   ink text on it is 9.5:1, and the readable amber is --accent,
-   because the layer colours text with --accent all over.
+   CONTRAST
+   Gantry's light --accent-text #b9740f is 3.3:1 on paper, so small
+   amber text uses #94600e (4.65:1); the original amber is kept for
+   display-size accents, where 3:1 is the bar, and the bright hazard
+   is kept for fills.
    ============================================================ */
-
-/* ---- Raw Gantry palette, both modes (usable in fork components) ---- */
-[data-theme="gantry"],
-[data-theme="gantry-light"] {
-  --hazard:      #f2ab1e;
-  --hazard-deep: #c98714;
-  --tape:        #14110d;
-  --on-tape:     #ece3d3;
-
-  /* Fonts (loaded in nuxt.config.ts) */
-  --font-sans:    'Instrument Sans', system-ui, -apple-system, sans-serif;
-  --font-body:    var(--font-sans);
-  --font-heading: 'Archivo', 'Instrument Sans', system-ui, sans-serif;
-  --font-mono:    'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
-
-  /* Shape: Gantry is sharp, with hard offset shadows */
-  --radius: 0;
-  --radius-none: 0;
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-2xl: 0;
-  --radius-full: 9999px;
-
-  --border-width-thin: 1px;
-  --border-width-default: 2px;
-  --border-width-thick: 3px;
-
-  --transition-fast: 0.12s ease;
-  --transition-default: 0.18s ease;
-  --transition-slow: 0.4s ease;
-}
 
 /* ============================================================
-   DARK — "gantry" (default)
+   TOKENS — LIGHT (default, as on heatsynclabs.org)
    ============================================================ */
-[data-theme="gantry"] {
-  color-scheme: dark;
-
-  /* Surfaces: char, grime, slab, slab-hi */
-  --bg:       #15120f;
-  --surface:  #1d1915;
-  --surface2: #26211b;
-  --surface3: #2f2920;
-
-  --color-surface: var(--surface);
-  --color-surface-alt: var(--surface2);
-  --color-surface-raised: var(--surface);
-  --color-surface-hover: var(--surface2);
-  --color-surface-overlay: rgba(10, 8, 6, 0.72);
-  --color-surface-overlay-light: rgba(10, 8, 6, 0.5);
-  --color-surface-scrim: rgba(21, 18, 15, 0.85);
-  --color-bg-subtle: var(--bg);
-
-  /* Text: bone, ash, and a lifted smoke (see header) */
-  --text:       #ece3d3;
-  --text-dim:   #a79d8c;
-  --text-faint: #968b78;
-
-  --color-text: var(--text);
-  --color-text-secondary: var(--text-dim);
-  --color-text-muted: var(--text-faint);
-  --color-text-inverse: #15120f;
-
-  /* Borders: steel-hi for structure, steel for hairlines */
-  --border:  #4a4338;
-  --border2: #3a342b;
-
-  --color-border: var(--border2);
-  --color-border-strong: var(--border);
-  --color-border-focus: var(--accent);
-
-  /* Accent: hazard amber, readable as text and as a fill */
-  --accent:            #f2ab1e;
-  --accent-text:       #f2ab1e;
-  --accent-bg:         rgba(242, 171, 30, 0.12);
-  --accent-bg-strong:  rgba(242, 171, 30, 0.22);
-  --accent-bg-heavy:   rgba(242, 171, 30, 0.38);
-  --accent-bg-solid:   rgba(242, 171, 30, 0.6);
-  --accent-border:     rgba(242, 171, 30, 0.4);
-  --accent-focus-ring: 0 0 0 3px rgba(242, 171, 30, 0.3);
-  --focus-ring:        0 0 0 3px rgba(242, 171, 30, 0.3);
-
-  --color-accent: var(--accent);
-  --color-accent-hover: #f5bc4a;
-  --color-accent-text: var(--accent-text);
-  --color-accent-bg: var(--accent-bg);
-  --color-accent-border: var(--accent-border);
-  --color-on-accent: var(--tape);
-
-  --color-primary: var(--accent);
-  --color-primary-hover: #f5bc4a;
-  --color-primary-text: var(--tape);
-  --color-on-primary: var(--tape);
-
-  --color-link: var(--accent);
-  --color-link-hover: #f5bc4a;
-
-  --secondary: #a79d8c;
-  --secondary-bg: rgba(167, 157, 140, 0.12);
-  --secondary-border: rgba(167, 157, 140, 0.35);
-  --secondary-hover: #ece3d3;
-  --color-on-secondary: var(--tape);
-
-  /* Status: live, fault, idle, violet, info, rust */
-  --green: #5fb892;
-  --green-text: #5fb892;
-  --green-bg: rgba(95, 184, 146, 0.12);
-  --green-border: rgba(95, 184, 146, 0.35);
-  --color-on-green: var(--tape);
-
-  --red: #d24f3a;
-  --red-text: #e0644e;
-  --red-bg: rgba(210, 79, 58, 0.14);
-  --red-border: rgba(210, 79, 58, 0.4);
-  --color-on-red: #ffffff;
-
-  --yellow: #f2ab1e;
-  --yellow-text: #f2ab1e;
-  --yellow-bg: rgba(242, 171, 30, 0.12);
-  --yellow-border: rgba(242, 171, 30, 0.35);
-  --color-on-yellow: var(--tape);
-
-  --purple: #9b7fd0;
-  --purple-text: #9b7fd0;
-  --purple-bg: rgba(155, 127, 208, 0.14);
-  --purple-border: rgba(155, 127, 208, 0.38);
-
-  --teal: #74a6d4;
-  --teal-text: #74a6d4;
-  --teal-bg: rgba(94, 147, 196, 0.14);
-  --teal-border: rgba(94, 147, 196, 0.38);
-
-  --pink: #d9714a;
-  --pink-text: #d9714a;
-  --pink-bg: rgba(194, 84, 44, 0.14);
-  --pink-border: rgba(194, 84, 44, 0.4);
-
-  --color-success: var(--green);
-  --color-warning: var(--yellow);
-  --color-error: var(--red-text);
-  --color-info: var(--teal);
-  --color-success-bg: var(--green-bg);
-  --color-warning-bg: var(--yellow-bg);
-  --color-error-bg: var(--red-bg);
-  --color-info-bg: var(--teal-bg);
-
-  /* Code */
-  --code-bg: #100e0b;
-  --code-border: #3a342b;
-  --code-header-bg: #1d1915;
-  --code-text: #ece3d3;
-  --code-muted: #968b78;
-  --code-inline: #f2ab1e;
-  --code-green: #5fb892;
-
-  /* Hard offset shadows */
-  --shadow-sm:      3px 3px 0 #0a0806;
-  --shadow-md:      4px 4px 0 #0a0806;
-  --shadow-lg:      6px 6px 0 #0a0806;
-  --shadow-xl:      8px 8px 0 #0a0806;
-  --shadow-block:   6px 6px 0 #0a0806;
-  --shadow-block-sm: 4px 4px 0 #0a0806;
-  --shadow-accent:  4px 4px 0 #c98714;
-
-  /* Chrome */
-  --cpub-topbar-bg: rgba(21, 18, 15, 0.94);
-  --cpub-topbar-border: var(--border);
-  --cpub-footer-bg: #100e0b;
-  --cpub-footer-border: var(--border);
-  --cpub-footer-text: #a79d8c;
-  --cpub-footer-heading: #ece3d3;
-  --cpub-footer-muted: #968b78;
-  --cpub-footer-link-hover: #f2ab1e;
-
-  /* Fork components (SiteLogo outlines the mark in the page colour) */
-  --hs-paper: var(--bg);
-}
-
-/* ============================================================
-   LIGHT — "gantry-light" (paper and ink)
-   ============================================================ */
-[data-theme="gantry-light"] {
+:root[data-theme] {
   color-scheme: light;
 
-  --bg:       #f4efe3;
-  --surface:  #faf6ec;
-  --surface2: #ebe3d3;
-  --surface3: #f0e8d8;
+  /* Gantry raw palette (light) */
+  --char: #f4efe3;
+  --grime: #ebe3d3;
+  --slab: #faf6ec;
+  --slab-hi: #f0e8d8;
+  --steel: rgba(28, 24, 18, 0.16);
+  --steel-hi: #1c1812;
+  --bone: #1c1812;
+  --ash: #4a4236;
+  --smoke: #6e6352;
+  --hazard: #f2ab1e;
+  --hazard-deep: #b9740f;
+  --tape-dark: #14110d;
+  --on-dark: #ece3d3;
+  --live: #3f9d77;
+  --fault: #c43d28;
+  --violet: #7a5fb0;
+  --info: #3f74a8;
+  --rust: #c2542c;
+  --g-accent-display: #b9740f;
+  --g-shadow: 6px 6px 0 #1c1812;
+  --g-shadow-sm: 4px 4px 0 #1c1812;
 
+  /* Type */
+  --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Archivo', 'Instrument Sans', system-ui, sans-serif;
+  --font-display: 'Archivo', 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  --g-font-code: 'JetBrains Mono', ui-monospace, monospace;
+  --leading-normal: 1.6;
+
+  /* Surfaces */
+  --bg: var(--char);
+  --surface: var(--slab);
+  --surface2: var(--grime);
+  --surface3: var(--slab-hi);
+  --bg-image: none;
+  --surface-backdrop: none;
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface2);
   --color-surface-raised: var(--surface);
@@ -225,88 +80,84 @@
   --color-surface-scrim: rgba(244, 239, 227, 0.85);
   --color-bg-subtle: var(--bg);
 
-  --text:       #1c1812;
-  --text-dim:   #4a4236;
-  --text-faint: #6e6352;
-
+  /* Text */
+  --text: var(--bone);
+  --text-dim: var(--ash);
+  --text-faint: var(--smoke);
   --color-text: var(--text);
   --color-text-secondary: var(--text-dim);
   --color-text-muted: var(--text-faint);
-  --color-text-inverse: #f4efe3;
+  --color-text-inverse: var(--char);
 
-  /* Thick ink for structure, faint ink for hairlines */
-  --border:  #1c1812;
-  --border2: rgba(28, 24, 18, 0.16);
-
+  /* Borders: ink for structure, faint ink for hairlines */
+  --border: var(--steel-hi);
+  --border2: var(--steel);
   --color-border: var(--border2);
   --color-border-strong: var(--border);
-  --color-border-focus: var(--accent);
+  --color-border-focus: var(--hazard);
+  --border-width-thin: 1px;
+  --border-width-default: 2px;
+  --border-width-thick: 3px;
 
-  /* Readable amber for text; the hazard fill is applied to filled controls below */
-  --accent:            #865409;
-  --accent-text:       #865409;
-  --accent-bg:         rgba(242, 171, 30, 0.16);
-  --accent-bg-strong:  rgba(242, 171, 30, 0.28);
-  --accent-bg-heavy:   rgba(242, 171, 30, 0.45);
-  --accent-bg-solid:   rgba(242, 171, 30, 0.7);
-  --accent-border:     rgba(134, 84, 9, 0.45);
+  /* Accent: readable amber for text, hazard for fills */
+  --accent: #94600e;
+  --accent-text: #94600e;
+  --accent-bg: rgba(242, 171, 30, 0.16);
+  --accent-bg-strong: rgba(242, 171, 30, 0.28);
+  --accent-bg-heavy: rgba(242, 171, 30, 0.45);
+  --accent-bg-solid: rgba(242, 171, 30, 0.7);
+  --accent-border: var(--hazard);
   --accent-focus-ring: 0 0 0 3px rgba(242, 171, 30, 0.45);
-  --focus-ring:        0 0 0 3px rgba(242, 171, 30, 0.45);
-
+  --focus-ring: 0 0 0 3px rgba(242, 171, 30, 0.45);
   --color-accent: var(--accent);
-  --color-accent-hover: #6b4307;
+  --color-accent-hover: #7a4f0b;
   --color-accent-text: var(--accent-text);
   --color-accent-bg: var(--accent-bg);
   --color-accent-border: var(--accent-border);
-  --color-on-accent: #ffffff;
-
+  --color-on-accent: var(--tape-dark);
   --color-primary: var(--hazard);
-  --color-primary-hover: var(--hazard-deep);
-  --color-primary-text: var(--tape);
-  --color-on-primary: var(--tape);
+  --color-primary-hover: #f5bc4a;
+  --color-primary-text: var(--tape-dark);
+  --color-on-primary: var(--tape-dark);
+  --color-link: var(--accent-text);
+  --color-link-hover: #7a4f0b;
 
-  --color-link: var(--accent);
-  --color-link-hover: #6b4307;
-
-  --secondary: #4a4236;
+  --secondary: var(--ash);
   --secondary-bg: rgba(74, 66, 54, 0.1);
   --secondary-border: rgba(74, 66, 54, 0.3);
-  --secondary-hover: #1c1812;
+  --secondary-hover: var(--bone);
   --color-on-secondary: #ffffff;
 
-  --green: #3f9d77;
+  /* Status */
+  --green: var(--live);
   --green-text: #276b50;
   --green-bg: rgba(63, 157, 119, 0.12);
-  --green-border: rgba(63, 157, 119, 0.4);
+  --green-border: rgba(63, 157, 119, 0.45);
   --color-on-green: #ffffff;
-
-  --red: #c43d28;
+  --red: var(--fault);
   --red-text: #a8321f;
   --red-bg: rgba(196, 61, 40, 0.1);
-  --red-border: rgba(196, 61, 40, 0.38);
+  --red-border: rgba(196, 61, 40, 0.4);
   --color-on-red: #ffffff;
-
-  --yellow: #f2ab1e;
-  --yellow-text: #865409;
+  --yellow: var(--hazard);
+  --yellow-text: #94600e;
   --yellow-bg: rgba(242, 171, 30, 0.16);
-  --yellow-border: rgba(185, 116, 15, 0.45);
-  --color-on-yellow: var(--tape);
-
-  --purple: #7a5fb0;
+  --yellow-border: rgba(185, 116, 15, 0.5);
+  --color-on-yellow: var(--tape-dark);
+  --purple: var(--violet);
   --purple-text: #644a99;
   --purple-bg: rgba(122, 95, 176, 0.12);
-  --purple-border: rgba(122, 95, 176, 0.38);
-
-  --teal: #3f74a8;
+  --purple-border: rgba(122, 95, 176, 0.4);
+  --teal: var(--info);
   --teal-text: #305f8e;
   --teal-bg: rgba(63, 116, 168, 0.12);
-  --teal-border: rgba(63, 116, 168, 0.38);
-
-  --pink: #c2542c;
+  --teal-border: rgba(63, 116, 168, 0.4);
+  --pink: var(--rust);
   --pink-text: #a2431f;
   --pink-bg: rgba(194, 84, 44, 0.1);
-  --pink-border: rgba(194, 84, 44, 0.38);
-
+  --pink-border: rgba(194, 84, 44, 0.4);
+  --gold: var(--hazard);
+  --bronze: var(--rust);
   --color-success: var(--green-text);
   --color-warning: var(--yellow-text);
   --color-error: var(--red-text);
@@ -315,104 +166,468 @@
   --color-warning-bg: var(--yellow-bg);
   --color-error-bg: var(--red-bg);
   --color-info-bg: var(--teal-bg);
+  --color-badge-overlay: rgba(20, 17, 13, 0.82);
 
+  /* Code */
   --code-bg: #1c1812;
   --code-border: #1c1812;
   --code-header-bg: #2a241b;
   --code-text: #ece3d3;
   --code-muted: #a79d8c;
-  --code-inline: #865409;
+  --code-inline: #94600e;
   --code-green: #5fb892;
 
-  --shadow-sm:      3px 3px 0 #1c1812;
-  --shadow-md:      4px 4px 0 #1c1812;
-  --shadow-lg:      6px 6px 0 #1c1812;
-  --shadow-xl:      8px 8px 0 #1c1812;
-  --shadow-block:   6px 6px 0 #1c1812;
-  --shadow-block-sm: 4px 4px 0 #1c1812;
-  --shadow-accent:  4px 4px 0 #1c1812;
+  /* Shape: sharp, hard offset shadows */
+  --radius: 0;
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-full: 9999px;
+  --shadow-sm: var(--g-shadow-sm);
+  --shadow-md: var(--g-shadow-sm);
+  --shadow-lg: var(--g-shadow);
+  --shadow-xl: var(--g-shadow);
+  --shadow-block: var(--g-shadow);
+  --shadow-block-sm: var(--g-shadow-sm);
+  --shadow-accent: var(--g-shadow-sm);
+  --transition-fast: 0.12s ease;
+  --transition-default: 0.18s ease;
+  --transition-slow: 0.4s ease;
 
+  /* Chrome */
+  --cpub-topbar-height: 66px;
   --cpub-topbar-bg: rgba(244, 239, 227, 0.94);
-  --cpub-topbar-border: var(--border);
-  /* A paper footer: the wordmark and icons are ink, so a dark footer hid them */
-  --cpub-footer-bg: #ebe3d3;
-  --cpub-footer-border: #1c1812;
-  --cpub-footer-text: #4a4236;
-  --cpub-footer-heading: #1c1812;
-  --cpub-footer-muted: #6e6352;
-  --cpub-footer-link-hover: #865409;
+  --cpub-topbar-blur: blur(6px);
+  --cpub-topbar-border: 2px solid var(--steel-hi);
+  --cpub-topbar-shadow: none;
+  --cpub-topbar-padding-x: 28px;
+  --cpub-nav-link-size: 12px;
+  --cpub-nav-link-weight: 500;
+  --cpub-nav-link-color: var(--ash);
+  --cpub-nav-link-padding: 8px 11px;
+  --cpub-nav-link-radius: 0;
+  --cpub-nav-link-active-color: var(--accent-text);
+  --cpub-nav-link-active-bg: transparent;
+  --cpub-nav-link-active-border: transparent;
+  --cpub-nav-link-active-weight: 600;
+  --cpub-footer-bg: var(--grime);
+  --cpub-footer-border: var(--hazard);
+  --cpub-footer-text: var(--ash);
+  --cpub-footer-heading: var(--bone);
+  --cpub-footer-muted: var(--smoke);
+  --cpub-footer-link-hover: var(--accent-text);
+  --g-footer-title: #8f5c0c;
 
+  /* Fork components */
   --hs-paper: var(--bg);
 }
 
 /* ============================================================
-   COMPONENT TOUCHES (both modes)
-   Token-driven, restrained. heatsync-ui.css still supplies the
-   layout polish (card size, button press, tabs, footer credit).
+   TOKENS — DARK (gantry-dark, and any other *-dark id)
    ============================================================ */
+:root[data-theme="gantry-dark"],
+:root[data-theme="dark"],
+:root[data-theme$="-dark"] {
+  color-scheme: dark;
 
-/* Display voice: Archivo, heavy, uppercase for page titles */
-[data-theme^="gantry"] h1,
-[data-theme^="gantry"] .cpub-h1,
-[data-theme^="gantry"] .cpub-hero-title {
-  font-family: var(--font-heading) !important;
-  font-weight: 800 !important;
+  --char: #15120f;
+  --grime: #1d1915;
+  --slab: #26211b;
+  --slab-hi: #2f2920;
+  --steel: #3a342b;
+  --steel-hi: #4a4338;
+  --bone: #ece3d3;
+  --ash: #a79d8c;
+  --smoke: #968b78;
+  --hazard-deep: #c98714;
+  --live: #5fb892;
+  --fault: #d24f3a;
+  --violet: #9b7fd0;
+  --info: #5e93c4;
+  --rust: #c2542c;
+  --g-accent-display: #f2ab1e;
+  --g-shadow: 6px 6px 0 #0a0806;
+  --g-shadow-sm: 4px 4px 0 #0a0806;
+
+  --color-surface-overlay: rgba(10, 8, 6, 0.72);
+  --color-surface-overlay-light: rgba(10, 8, 6, 0.5);
+  --color-surface-scrim: rgba(21, 18, 15, 0.85);
+
+  --accent: #f2ab1e;
+  --accent-text: #f2ab1e;
+  --accent-bg: rgba(242, 171, 30, 0.12);
+  --accent-bg-strong: rgba(242, 171, 30, 0.22);
+  --accent-bg-heavy: rgba(242, 171, 30, 0.38);
+  --accent-bg-solid: rgba(242, 171, 30, 0.6);
+  --color-accent-hover: #f5bc4a;
+  --color-link-hover: #f5bc4a;
+
+  --secondary-bg: rgba(167, 157, 140, 0.12);
+  --secondary-border: rgba(167, 157, 140, 0.35);
+  --color-on-secondary: var(--tape-dark);
+
+  --green-text: #5fb892;
+  --green-bg: rgba(95, 184, 146, 0.12);
+  --color-on-green: var(--tape-dark);
+  --red-text: #e0644e;
+  --red-bg: rgba(210, 79, 58, 0.14);
+  --yellow-text: #f2ab1e;
+  --yellow-bg: rgba(242, 171, 30, 0.12);
+  --yellow-border: rgba(242, 171, 30, 0.45);
+  --purple-text: #9b7fd0;
+  --purple-bg: rgba(155, 127, 208, 0.14);
+  --teal-text: #74a6d4;
+  --teal-bg: rgba(94, 147, 196, 0.14);
+  --pink-text: #d9714a;
+  --pink-bg: rgba(194, 84, 44, 0.14);
+
+  --code-bg: #100e0b;
+  --code-border: #3a342b;
+  --code-header-bg: #1d1915;
+  --code-inline: #f2ab1e;
+
+  --cpub-topbar-bg: rgba(21, 18, 15, 0.94);
+  --g-footer-title: #f2ab1e;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+:root[data-theme] body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+:root[data-theme] :focus-visible { outline: 2px solid var(--hazard); outline-offset: 2px; }
+:root[data-theme] ::selection { background: var(--hazard); color: var(--tape-dark); }
+:root[data-theme] ::-webkit-scrollbar { width: 10px; height: 10px; }
+:root[data-theme] ::-webkit-scrollbar-track { background: var(--bg); }
+:root[data-theme] ::-webkit-scrollbar-thumb { background: var(--steel-hi); border: 2px solid var(--bg); }
+:root[data-theme] ::-webkit-scrollbar-thumb:hover { background: var(--hazard); }
+:root[data-theme] code,
+:root[data-theme] pre,
+:root[data-theme] kbd { font-family: var(--g-font-code); }
+
+/* Headlines: Archivo, heavy, tight. Mixed case like the org hero. */
+:root[data-theme] h1,
+:root[data-theme] h2,
+:root[data-theme] h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+:root[data-theme] h1 { font-weight: 900; line-height: 1.04; }
+:root[data-theme] h2 { font-weight: 800; line-height: 1.1; }
+:root[data-theme] h3 { font-weight: 700; line-height: 1.2; }
+
+/* Page titles on listing pages read like the org's section titles:
+   Archivo black, uppercase. */
+:root[data-theme] .cpub-listing-title,
+:root[data-theme] .cpub-page-title,
+:root[data-theme] .cpub-section-title,
+:root[data-theme] .cpub-editorial-heading {
+  font-family: var(--font-display);
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.01em !important;
-  line-height: 1.02 !important;
-}
-[data-theme^="gantry"] h2,
-[data-theme^="gantry"] h3,
-[data-theme^="gantry"] .cpub-h2,
-[data-theme^="gantry"] .cpub-h3 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
 }
 
-/* Filled primary controls carry the hazard amber in both modes */
-[data-theme^="gantry"] .cpub-btn-primary {
-  background: var(--hazard);
-  border-color: var(--tape);
-  color: var(--tape);
+/* ============================================================
+   CAUTION RIBBONS
+   A tall ribbon at the top of every page (as in the org Layout),
+   a thin one above the footer.
+   ============================================================ */
+:root[data-theme] #main-content::before {
+  content: '';
+  display: block;
+  height: 40px;
+  background: repeating-linear-gradient(-45deg, var(--hazard) 0 24px, var(--tape-dark) 24px 48px);
+  border-bottom: 2px solid var(--tape-dark);
 }
-[data-theme^="gantry"] .cpub-btn-primary:hover {
-  background: #f5bc4a;
-  color: var(--tape);
-}
-[data-theme="gantry"] .cpub-btn-primary { border-color: var(--hazard-deep); }
+/* The homepage hero carries its own ribbon with the plate on it. */
+:root[data-theme] #main-content:has(.hs-hero)::before { display: none; }
 
-/* Caution tape along the top of the footer */
-[data-theme^="gantry"] .cpub-footer {
-  border-top: 0 !important;
-  border-image: none;
+:root[data-theme] .cpub-footer {
   position: relative;
+  border-top: 2px solid var(--hazard);
+  margin-top: 56px;
 }
-[data-theme^="gantry"] .cpub-footer::before {
+:root[data-theme] .cpub-footer::before {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
-  height: 8px;
-  background: repeating-linear-gradient(-45deg, var(--hazard) 0 14px, var(--tape) 14px 28px);
+  top: -11px;
+  height: 9px;
+  background: repeating-linear-gradient(-45deg, var(--hazard) 0 9px, var(--tape-dark) 9px 18px);
 }
 
-/* Focus and selection in the hazard amber */
-[data-theme^="gantry"] :focus-visible {
-  outline: 2px solid var(--hazard);
-  outline-offset: 2px;
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+:root[data-theme] .cpub-topbar .cpub-nav-link {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: 0;
+  background: none;
 }
-[data-theme^="gantry"] ::selection {
+:root[data-theme] .cpub-topbar .cpub-nav-link:hover {
+  color: var(--accent-text);
+  background: none;
+}
+:root[data-theme] .cpub-topbar .cpub-nav-link.router-link-active {
+  color: var(--accent-text);
+  background: none;
+  box-shadow: inset 0 -3px 0 var(--hazard);
+}
+:root[data-theme] .cpub-topbar .cpub-nav-link i { display: none; }
+:root[data-theme] .cpub-mobile-link {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  border-bottom: 1px dashed var(--steel);
+}
+:root[data-theme] .cpub-mobile-link:hover { color: var(--accent-text); background: none; }
+
+/* Search: a flat ink box with a mono placeholder */
+:root[data-theme] .cpub-search-btn {
+  background: var(--surface);
+  border: 2px solid var(--steel-hi);
+  border-radius: 0;
+}
+:root[data-theme] .cpub-search-btn input,
+:root[data-theme] .cpub-search-input {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+:root[data-theme] .cpub-kbd { font-family: var(--g-font-code); border-radius: 0; }
+
+/* The New button and the icon buttons */
+:root[data-theme] .cpub-btn-new {
   background: var(--hazard);
-  color: var(--tape);
+  color: var(--tape-dark);
+  border: 2px solid var(--tape-dark);
+  border-radius: 0;
+  box-shadow: var(--g-shadow-sm);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 12px;
+}
+:root[data-theme] .cpub-icon-btn { border-radius: 0; }
+
+/* ============================================================
+   BUTTONS — BaseButton from new-hsl
+   ============================================================ */
+:root[data-theme] .cpub-btn {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 2px solid var(--steel-hi);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+  line-height: 1.1;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+:root[data-theme] .cpub-btn:hover:not(:disabled) {
+  border-color: var(--hazard);
+  color: var(--accent-text);
+  background: transparent;
+  transform: translateY(-2px);
+}
+:root[data-theme] .cpub-btn-sm { font-size: 11px; letter-spacing: 0.08em; }
+:root[data-theme] .cpub-btn-primary,
+:root[data-theme] a.cpub-btn-primary {
+  background: var(--hazard);
+  color: var(--tape-dark);
+  border-color: var(--tape-dark);
+  box-shadow: var(--g-shadow-sm);
+}
+:root[data-theme] .cpub-btn-primary:hover:not(:disabled) {
+  background: var(--hazard);
+  color: var(--tape-dark);
+  border-color: var(--tape-dark);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--g-shadow);
+}
+:root[data-theme] .cpub-btn-primary:active:not(:disabled) { transform: none; box-shadow: var(--g-shadow-sm); }
+:root[data-theme] .cpub-btn:disabled { opacity: 0.5; transform: none; }
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+:root[data-theme] .cpub-input,
+:root[data-theme] .cpub-textarea,
+:root[data-theme] .cpub-select,
+:root[data-theme] input[type="text"],
+:root[data-theme] input[type="email"],
+:root[data-theme] input[type="password"],
+:root[data-theme] input[type="search"],
+:root[data-theme] input[type="url"],
+:root[data-theme] textarea,
+:root[data-theme] select {
+  border-radius: 0;
+}
+:root[data-theme] .cpub-input,
+:root[data-theme] .cpub-textarea,
+:root[data-theme] .cpub-select { border: 2px solid var(--steel-hi); background: var(--surface); }
+:root[data-theme] .cpub-form-label,
+:root[data-theme] label.cpub-label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* Steel scrollbars, amber on hover */
-[data-theme^="gantry"] ::-webkit-scrollbar { width: 10px; height: 10px; }
-[data-theme^="gantry"] ::-webkit-scrollbar-track { background: var(--bg); }
-[data-theme^="gantry"] ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--bg); }
-[data-theme^="gantry"] ::-webkit-scrollbar-thumb:hover { background: var(--hazard); }
+/* ============================================================
+   HOMEPAGE
+   ============================================================ */
+/* Feed tabs: mono labels, amber underline on the active one */
+:root[data-theme] .cpub-tabs-bar { border-bottom: 2px solid var(--steel-hi); }
+:root[data-theme] .cpub-tabs-inner { scrollbar-width: none; }
+:root[data-theme] .cpub-tabs-inner::-webkit-scrollbar { display: none; }
+:root[data-theme] .cpub-tab {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ash);
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 12px 16px;
+}
+:root[data-theme] .cpub-tab:hover { color: var(--accent-text); background: none; }
+:root[data-theme] .cpub-tab.active {
+  color: var(--accent-text);
+  background: none;
+  border-bottom-color: var(--hazard);
+}
+:root[data-theme] .cpub-main-layout { padding-top: 40px; }
 
-/* The wordmark bracket picks up the amber */
-[data-theme^="gantry"] .cpub-site-logo .cpub-logo-bracket { color: var(--hazard); }
+/* Content grid: the listing's card size */
+:root[data-theme] .cpub-content-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* Sidebar cards: org BaseCard, eyebrow titles */
+:root[data-theme] .cpub-sb-card {
+  background: var(--surface);
+  border: 2px solid var(--steel-hi);
+  box-shadow: var(--g-shadow-sm);
+  padding: 18px;
+  margin-bottom: 22px;
+}
+:root[data-theme] .cpub-sb-head {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  border-bottom: 1px solid var(--steel);
+}
+:root[data-theme] .cpub-sb-head a { color: var(--text); font-size: 11px; letter-spacing: 0.12em; }
+:root[data-theme] .cpub-sb-head a:hover { color: var(--accent-text); }
+:root[data-theme] .cpub-sb-card:has(.cpub-stats-grid) { display: none; }
+:root[data-theme] .cpub-contest-name,
+:root[data-theme] .cpub-hub-name { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.005em; }
+
+/* ============================================================
+   CONTENT CARDS — BaseCard: slab, 2px ink, hard shadow, lift
+   ============================================================ */
+:root[data-theme] .cpub-cc {
+  background: var(--surface);
+  border: 2px solid var(--steel-hi);
+  border-radius: 0;
+  box-shadow: var(--g-shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+:root[data-theme] .cpub-cc:hover { transform: translate(-2px, -2px); box-shadow: var(--g-shadow); }
+:root[data-theme] .cpub-cc-thumb { aspect-ratio: 16 / 10; border-bottom: 2px solid var(--steel-hi); background: var(--grime); }
+:root[data-theme] .cpub-cc-body { padding: 14px 16px 12px; }
+:root[data-theme] .cpub-cc-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+}
+:root[data-theme] .cpub-cc-desc { font-family: var(--font-body); font-size: 13px; line-height: 1.5; color: var(--ash); }
+:root[data-theme] .cpub-cc-footer,
+:root[data-theme] .cpub-cc-date,
+:root[data-theme] .cpub-cc-stat,
+:root[data-theme] .cpub-cc-aname { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
+:root[data-theme] .cpub-type-badge,
+:root[data-theme] .cpub-cc-badge {
+  font-family: var(--font-mono);
+  border-radius: 0;
+  letter-spacing: 0.12em;
+}
+
+/* ============================================================
+   FOOTER — org AppFooter: grime, hazard rule, mono everything
+   ============================================================ */
+:root[data-theme] .cpub-footer-col-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--g-footer-title);
+  margin-bottom: 10px;
+}
+:root[data-theme] .cpub-footer-link,
+:root[data-theme] .cpub-footer-tagline {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  line-height: 1.9;
+}
+:root[data-theme] .cpub-footer-social-link {
+  background: transparent;
+  border: 2px solid var(--steel-hi);
+  border-radius: 0;
+  width: 34px;
+  height: 34px;
+  color: var(--text);
+}
+:root[data-theme] .cpub-footer-social-link:hover { background: var(--hazard); border-color: var(--tape-dark); color: var(--tape-dark); }
+:root[data-theme] .cpub-footer-bottom { border-top: 1px solid var(--steel); text-align: center; letter-spacing: 0.06em; }
+:root[data-theme] .hs-cpub-credit { color: var(--accent-text); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--hazard); }
+:root[data-theme] .hs-cpub-badge-link { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
+
+/* ============================================================
+   SMALL PIECES
+   ============================================================ */
+:root[data-theme] .cpub-site-logo .cpub-logo-bracket { color: var(--hazard); }
+:root[data-theme] .cpub-empty-state-title { font-family: var(--font-display); font-weight: 800; }
+:root[data-theme] [class*="cpub-badge"],
+:root[data-theme] .cpub-tag,
+:root[data-theme] .cpub-chip { border-radius: 0; }
+:root[data-theme] .cpub-prose a { color: var(--accent-text); text-decoration: none; border-bottom: 2px solid var(--hazard); }
+:root[data-theme] .cpub-prose h1,
+:root[data-theme] .cpub-prose h2,
+:root[data-theme] .cpub-prose h3 { font-family: var(--font-display); }
+
+@media (max-width: 768px) {
+  :root[data-theme] { --cpub-topbar-padding-x: 14px; --cpub-topbar-height: 58px; }
+  /* The wordmark and Log in share a narrow bar: tighter button, room between */
+  :root[data-theme] .cpub-topbar-actions { gap: 8px; margin-left: 10px; }
+  :root[data-theme] .cpub-topbar-actions .cpub-btn { padding: 8px 10px; font-size: 11px; letter-spacing: 0.08em; box-shadow: 3px 3px 0 var(--steel-hi); }
+  :root[data-theme] #main-content::before { height: 30px; }
+  :root[data-theme] .cpub-main-layout { padding-top: 24px; }
+}
