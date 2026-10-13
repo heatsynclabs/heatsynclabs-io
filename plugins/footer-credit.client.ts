@@ -58,12 +58,14 @@ function patch(): void {
 
 export default defineNuxtPlugin(() => {
   if (typeof window === 'undefined') return;
-  patch();
-  const obs = new MutationObserver(() => patch());
-  const start = () => {
+  // Not before hydration. Patching the server-rendered DOM at plugin start made
+  // Vue find "Powered by CommonPub" where it rendered "Powered by HeatSync
+  // Labs." and log a hydration mismatch on every page (2026-10-12). `app:mounted`
+  // was still too early (async page components hydrate after it); onNuxtReady
+  // runs once hydration is complete. The observer re-applies the patch if a
+  // re-render ever replaces the nodes.
+  onNuxtReady(() => {
     patch();
-    obs.observe(document.body, { childList: true, subtree: true });
-  };
-  if (document.body) start();
-  else window.addEventListener('DOMContentLoaded', start, { once: true });
+    new MutationObserver(() => patch()).observe(document.body, { childList: true, subtree: true });
+  });
 });
