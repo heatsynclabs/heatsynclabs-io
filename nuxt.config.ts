@@ -7,8 +7,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   // Loaded AFTER the layer's theme CSS (Nuxt appends the app's css), and the
-  // file is intentionally unlayered so it overrides @layer commonpub cleanly.
-  css: ['~/theme/heatsync.css', '~/theme/heatsync-ui.css'],
+  // files are intentionally unlayered so they override @layer commonpub cleanly.
+  // gantry.css is the instance theme (registered in commonpub.config.ts);
+  // heatsync-ui.css is layout polish that reads tokens only. The previous
+  // palette, theme/heatsync.css, is kept in the repo but no longer loaded: it
+  // forced its orange onto every theme, which would fight Gantry.
+  css: ['~/theme/heatsync-ui.css', '~/theme/gantry.css'],
 
   app: {
     head: {
@@ -19,13 +23,14 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon-180.png' },
         { rel: 'shortcut icon', href: '/favicon.ico' },
 
-        // Brand typefaces — Permanent Marker / Special Elite / VT323 /
-        // Courier Prime. The design system forbids substitutes/system fonts.
+        // Gantry typefaces: Archivo (display), Instrument Sans (body), IBM
+        // Plex Mono (labels), JetBrains Mono (code), and Charis SIL for the
+        // wordmark only.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=Special+Elite&family=VT323&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;700&family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&display=swap',
         },
       ],
     },
