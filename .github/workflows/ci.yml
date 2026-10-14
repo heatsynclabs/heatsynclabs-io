@@ -1,0 +1,38 @@
+name: CI
+
+# Until session 262 this repo had no CI: merging to main WAS deploying, and
+# nothing checked a change before it reached heatsynclabs.io. This builds and
+# typechecks every pull request and every push to main, installing exactly the
+# way the Dockerfile does (npm, from package-lock.json), so what passes here is
+# the tree production runs. deploy.yml waits for this run before it deploys.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Reads package-lock.json: two copies of vue 500 every SSR page while
+      # /api/health stays green (deveco.io, 2026-08-31).
+      - name: Single-copy check
+        run: node scripts/check-single-vue.mjs
+
+      - name: Install (as the Dockerfile does)
+        run: npm install --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      - name: Typecheck
+        run: npx nuxi typecheck
