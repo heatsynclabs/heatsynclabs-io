@@ -32,6 +32,13 @@ jobs:
       - name: Build Docker image
         run: docker build -t heatsynclabs-app:latest .
 
+      # Stage the Caddyfile and the script that applies it safely (see
+      # deploy/sync-caddyfile.sh) in their own folder, copied in the SAME scp
+      # connection as the image: a second connection right after the first was
+      # reset by the droplet on the first try (2026-10-14).
+      - name: Stage Caddyfile sync files
+        run: mkdir -p caddy-sync && cp deploy/Caddyfile deploy/sync-caddyfile.sh deploy/caddyfile-known.sha256 caddy-sync/
+
       - name: Save image tarball
         run: docker save heatsynclabs-app:latest | gzip > heatsynclabs-app.tar.gz
 
@@ -64,20 +71,9 @@ jobs:
           host: ${{ secrets.PROD_HOST }}
           username: root
           key: ${{ secrets.PROD_SSH_KEY }}
-          source: heatsynclabs-app.tar.gz
+          source: heatsynclabs-app.tar.gz,caddy-sync
           target: /opt/commonpub/
           timeout: 600s
-
-      # The Caddyfile and the script that applies it safely (deploy/sync-caddyfile.sh).
-      - name: Copy Caddyfile sync files to droplet
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: root
-          key: ${{ secrets.PROD_SSH_KEY }}
-          source: deploy/Caddyfile,deploy/sync-caddyfile.sh,deploy/caddyfile-known.sha256
-          target: /opt/commonpub/caddy-sync/
-          strip_components: 1
 
       - name: Load image, restart, migrate
         uses: appleboy/ssh-action@v1
