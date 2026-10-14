@@ -13,12 +13,14 @@ jobs:
   deploy:
     name: Build & Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
 
-      # This repo has no CI workflow, so merging to main IS deploying. That
-      # makes a pre-build gate the only place a bad dependency tree can be
-      # stopped. It reads package-lock.json, which is what the Dockerfile below
+      # Kept as a fast pre-build gate even though CI (ci.yml) now runs the same
+      # check: it reads package-lock.json, which is what the Dockerfile below
       # installs from.
       #
       # On 2026-08-31 the sibling instance (deveco.io) served 500 on every SSR
@@ -33,6 +35,29 @@ jobs:
       - name: Save image tarball
         run: docker save heatsynclabs-app:latest | gzip > heatsynclabs-app.tar.gz
 
+      # Deploy gate (session 262): nothing reaches the droplet until CI has built
+      # and typechecked THIS commit. Skipped for a manual workflow_dispatch run,
+      # which is an operator's explicit choice. The image builds in parallel.
+      - name: Wait for CI on this commit
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 60); do
+            run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow CI --commit "$GITHUB_SHA" --event push --json status,conclusion --jq '.[0] // {}')
+            status=$(echo "$run" | jq -r '.status // "not started"')
+            conclusion=$(echo "$run" | jq -r '.conclusion // ""')
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then echo "CI passed on $GITHUB_SHA"; exit 0; fi
+              echo "::error::CI on $GITHUB_SHA finished '$conclusion'. Not deploying; re-run CI, then re-run this workflow."
+              exit 1
+            fi
+            echo "CI is $status ($i/60)"
+            sleep 30
+          done
+          echo "::error::CI did not finish within 30 minutes. Not deploying."
+          exit 1
+
       - name: Copy image to droplet
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -43,6 +68,17 @@ jobs:
           target: /opt/commonpub/
           timeout: 600s
 
+      # The Caddyfile and the script that applies it safely (deploy/sync-caddyfile.sh).
+      - name: Copy Caddyfile sync files to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: root
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: deploy/Caddyfile,deploy/sync-caddyfile.sh,deploy/caddyfile-known.sha256
+          target: /opt/commonpub/caddy-sync/
+          strip_components: 1
+
       - name: Load image, restart, migrate
         uses: appleboy/ssh-action@v1
         with:
@@ -52,7 +88,10 @@ jobs:
           command_timeout: 10m
           script: |
             set -e
+            set -o pipefail
             cd /opt/commonpub
+            # Keep the running image as :previous for a one-retag rollback.
+            docker tag heatsynclabs-app:latest heatsynclabs-app:previous 2>/dev/null || true
             docker load < heatsynclabs-app.tar.gz
             rm -f heatsynclabs-app.tar.gz
             docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans
@@ -72,12 +111,12 @@ jobs:
               app node scripts/db-migrate.mjs \
               || { echo "::error::db:migrate failed"; exit 1; }
             docker image prune -f
-            # Smoke test
-            for i in 1 2 3 4 5 6; do
-              if curl -sf http://localhost:3000/api/health >/dev/null 2>&1 \
-                 || docker compose -f docker-compose.prod.yml exec -T app wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1; then
-                echo "✅ Health check passed"; exit 0
-              fi
-              echo "⏳ Waiting for app... ($i/6)"; sleep 5
-            done
-            echo "::warning::Health check did not pass — check 'docker compose logs app' on the droplet"
+            # Post-deploy smoke, run INSIDE the app container. The old loop could
+            # only warn, so a broken release still reported success. This waits for
+            # /api/health, then requires /, /api/health and /contests to answer.
+            docker compose -f docker-compose.prod.yml exec -T app node scripts/smoke.mjs \
+              || { echo "::error::Post-deploy smoke failed. Roll back: docker tag heatsynclabs-app:previous heatsynclabs-app:latest && docker compose -f docker-compose.prod.yml up -d --force-recreate app"; exit 1; }
+            # Bring the live Caddyfile up to the repo's version when it is safe to.
+            sh caddy-sync/sync-caddyfile.sh caddy-sync/Caddyfile caddy-sync/caddyfile-known.sha256 -f docker-compose.prod.yml \
+              || echo "::warning::Caddyfile sync errored; the app deploy itself succeeded."
+            echo "Deployed ${{ github.sha }}"
